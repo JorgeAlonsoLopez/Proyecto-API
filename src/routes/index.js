@@ -1,5 +1,5 @@
-import user from './user';
+import auth from './auth';
 import song from './song';
 import list from './list';
 
-export default {user, song, list}
+export default {auth, song, list}

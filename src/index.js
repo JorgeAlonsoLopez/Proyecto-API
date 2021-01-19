@@ -8,6 +8,7 @@ import mongoose from "mongoose";
 
 import models from './models';
 import routes from './routes';
+import passport from './services/passport';
 
 const app = express();
 app.use(cors());
@@ -15,6 +16,8 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan('dev'))
 morganBody(app);
+
+app.use(passport.initialize());
 
 app.use('/songs', routes.song);
 app.use('/lists', routes.list);
