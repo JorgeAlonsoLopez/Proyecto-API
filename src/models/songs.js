@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const songSchema = new Schema({
+  id: mongoose.ObjectId,
   title: String,
   artist: String,
   album: String,
@@ -35,16 +36,14 @@ const songRepository = {
   },
 
   async updateById(id, modified) {
-    
-    //! hay que montar la lista de lo que vienen de las cabezeras
-
-
     const saved = await Song.findById(id);
     if (saved != null) {
       return await Object.assign(saved, modified).save();
     } else
       return undefined;
-  }, async delete(id) {
+  }, 
+  
+  async delete(id) {
     await Song.findByIdAndRemove(id).exec();
   }
 

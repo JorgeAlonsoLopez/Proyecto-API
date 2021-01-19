@@ -5,6 +5,7 @@ import Song from './songs';
 const { Schema } = mongoose;
 
 const listSchema = new Schema({
+  id: mongoose.ObjectId,
   name: String,
   description: String,
   user_id: mongoose.ObjectId,
@@ -37,21 +38,20 @@ const listRepository = {
     const theList = new List({
       name: name,
       description: description, 
-      user_id: user_id, //! viene del tocken
+      user_id: user_id,
       songs: []
     });
     const result = await theList.save();
     return result;
   },
 
-  async updateById(id, modifiedList) {
-
-    //! hay que montar la lista de lo que vienen de las cabezeras
-
-
+  async updateById(id, name, description) {
 
     const saved = await List.findById(id);
     if (saved != null) {
+      var modifiedList = Object.create(saved)
+      modifiedList.name = name;
+      modifiedList.description = description;
       return await Object.assign(saved, modifiedList).save();
     } else
       return undefined;
@@ -59,6 +59,15 @@ const listRepository = {
 
   async delete(id) {
     await List.findByIdAndRemove(id).exec();
+  },
+
+  async findSongsById(id){
+    const result = await List.findById(id).populate('songs').exec();
+    if(result != null){
+      return result.songs;
+    }else{
+      return undefined;
+    }
   }
 
 

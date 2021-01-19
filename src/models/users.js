@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
+    id: mongoose.ObjectId,
     name: String,
     email: String,
     passw: Number
@@ -13,7 +14,8 @@ function toDto(user){
     
     let dto = {
         name: user.name,
-        email: user.email
+        email: user.email,
+        id: user.id
     }
     
     return dto;
