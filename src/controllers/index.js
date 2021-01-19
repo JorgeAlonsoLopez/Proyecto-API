@@ -3,4 +3,4 @@ import songController from './list';
 import listController from './song';
 
 
-export default {userController}
+export default {userController, songController, listController}
