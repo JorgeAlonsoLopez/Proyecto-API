@@ -27,11 +27,11 @@ const emailExists = async (email) => {
 }
 
 const userRepository = {
-    async create(newUser) {
+    async create(name, email, passw) {
         const theUser = new User({
-            name: newUser.name,
-            email: newUser.email,
-            passw: newUser.passw
+            name: name,
+            email: email,
+            passw: passw
         });
         const result = await theUser.save();
         return toDto(result);
