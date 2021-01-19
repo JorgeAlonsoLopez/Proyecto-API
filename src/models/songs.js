@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const songSchema = new Schema({
-  id: mongoose.ObjectId,
+  //id: mongoose.ObjectId,
   title: String,
   artist: String,
   album: String,
