@@ -11,7 +11,7 @@ const songController = {
             res.sendStatus(404);
     },
 
-    cacionPorId: async (req, res) => {
+    cancionPorId: async (req, res) => {
         const data = await songRepository.findById(req.params.id);
         if (Array.isArray(data) && data.length > 0) 
             res.status(200).json(data);
