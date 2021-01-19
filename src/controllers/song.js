@@ -4,7 +4,6 @@ import {body, validationResult} from 'express-validator';
 const songController = {
 
     todasLasCanciones: async (req, res) => {
-
         const data = await songRepository.findAll();
         if (Array.isArray(data) && data.length > 0) 
             res.status(200).json(data);
@@ -14,10 +13,11 @@ const songController = {
 
     cancionPorId: async (req, res) => {
         const data = await songRepository.findById(req.params.id);
-        if (Array.isArray(data) && data.length > 0) 
+        if(data != undefined) {
             res.status(200).json(data);
-        else
+        }else{
             res.sendStatus(404);
+        }
     },
 
     nuevaCancion: async (req, res) => {

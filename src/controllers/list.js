@@ -16,7 +16,7 @@ const listController = {
 
     todasLasListasPorUsuario: async (req, res) => {
         const data = await listRepository.findAllByUser(req.body.id_user); //! se cambia el id por el tocken
-        if (Array.isArray(data) && data.length > 0) 
+        if (data != undefined) 
             res.status(200).json(data);
         else
             res.sendStatus(404);
