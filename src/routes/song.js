@@ -1,24 +1,25 @@
 import { Router } from 'express';
 import { songController } from '../controllers/song';
 import { param, body } from 'express-validator';
-import { validar } from '../middlewares/validacion'
+import { validar } from '../middlewares/validacion';
+import { token } from '../services/passport';
 
 
 const router = Router();
 
-router.get('/', songController.todasLasCanciones);
+router.get('/', token(), songController.todasLasCanciones);
 
-router.get('/:id', songController.cancionPorId);
+router.get('/:id', token(), songController.cancionPorId);
 
 router.post('/', [
 
- ], validar, songController.nuevaCancion);
+ ], validar, token(), songController.nuevaCancion);
 
 router.put('/:id', [
     
-], validar, songController.modificarCancion);
+], validar, token(), songController.modificarCancion);
 
-router.delete('/:id', songController.eliminarCancion);
+router.delete('/:id', token(), songController.eliminarCancion);
 
 
 export default router;

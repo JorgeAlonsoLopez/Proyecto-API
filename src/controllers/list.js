@@ -2,6 +2,7 @@ import { List,listRepository} from '../models/lists';
 import {body, validationResult} from 'express-validator';
 import { Song,songRepository} from '../models/songs';
 import { songController } from './song';
+import jwt from 'jsonwebtoken';
 
 const listController = {
 
@@ -15,7 +16,8 @@ const listController = {
     },
 
     todasLasListasPorUsuario: async (req, res) => {
-        const data = await listRepository.findAllByUser(req.body.id_user); //! se cambia el id por el tocken
+        let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
+        const data = await listRepository.findAllByUser(id); //! se cambia el id por el tocken
         if (data != undefined) 
             res.status(200).json(data);
         else
@@ -31,8 +33,9 @@ const listController = {
     },
 
     nuevaLista: async (req, res) => {
+        let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
         if(req.body.name != null && req.body.name != undefined && req.body.name != ""){
-            let nueva = await listRepository.create(req.body.name, req.body.description, req.body.id_user); //! se cambia el id por el tocken
+            let nueva = await listRepository.create(req.body.name, req.body.description, id); //! se cambia el id por el tocken
             res.status(201).json(nueva);
         }else{
             res.sendStatus(404);

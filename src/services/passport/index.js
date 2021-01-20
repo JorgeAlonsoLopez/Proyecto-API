@@ -33,11 +33,10 @@ const opts = {
 
 passport.use('token', new JwtStrategy(opts, (jwt_payload, done) => {
 
-
     const user_id = jwt_payload.sub;
 
-
     const user = userRepository.findById(user_id);
+    console.log(user);
     if (user == undefined)
         return done(null, false);
     else

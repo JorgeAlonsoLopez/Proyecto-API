@@ -12,8 +12,7 @@ const AuthController = {
         res.status(201).json(usuarioCreado);
     },
 
-    login: async (req, res, next) => {
-        //let user = userRepository.findById(req.body.id);
+    login: (req, res, next) => {
         const token = JwtService.sign(req.user);
         res.status(201).json({
             nombre: req.user.nombre,
