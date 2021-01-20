@@ -44,7 +44,7 @@ const songController = {
             if (modific == undefined)
                 res.sendStatus(404);
             else
-                res.status(204).json(modific);
+                res.sendStatus(204);
             }
         
         

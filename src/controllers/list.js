@@ -58,7 +58,7 @@ const listController = {
             if (modific == undefined)
                 res.sendStatus(404);
             else
-                res.status(204).json(modific);
+                res.sendStatus(204);
             }
         
         
@@ -111,7 +111,7 @@ const listController = {
             lista.songs.pull(req.params.id2);
             await lista.save();
             let data = await listRepository.findById(lista.id1);
-            res.status(204).json(data);
+            res.sendStatus(204);
         } else {
             res.sendStatus(404);
         }

@@ -15,7 +15,7 @@ router.post('/register', [
         .withMessage('El campo email debe ser un email válido')
         .custom(email => {
             if(emailExists(email) > 0) {
-                throw new Error('El email ya está registrado. Proporcione un valor diferente');
+                throw new Error('El email ya está registrado. Proporcione un correo diferente');
             } else {  
                 return true;
             }

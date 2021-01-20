@@ -9,17 +9,23 @@ const router = Router();
 
 router.get('/', token(), songController.todasLasCanciones);
 
-router.get('/:id', token(), songController.cancionPorId);
+
+router.get('/:id', [ param('id').isInt().withMessage('ID debe ser un número entero') ], token(), songController.cancionPorId);
+
 
 router.post('/', [
 
  ], validar, token(), songController.nuevaCancion);
 
+
 router.put('/:id', [
+    param('id').isInt().withMessage('ID debe ser un número entero')
     
 ], validar, token(), songController.modificarCancion);
 
-router.delete('/:id', token(), songController.eliminarCancion);
+
+router.delete('/:id', [ param('id').isInt().withMessage('ID debe ser un número entero') ], token(), songController.eliminarCancion);
+
 
 
 export default router;
