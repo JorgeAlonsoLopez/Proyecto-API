@@ -17,7 +17,7 @@ const listController = {
 
     todasLasListasPorUsuario: async (req, res) => {
         let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
-        const data = await listRepository.findAllByUser(id); //! se cambia el id por el tocken
+        const data = await listRepository.findAllByUser(id);
         if (data != undefined) 
             res.status(200).json(data);
         else
@@ -26,16 +26,23 @@ const listController = {
 
     listaPorId: async (req, res) => {
         const data = await listRepository.findById(req.params.id);
-        if (Array.isArray(data) && data.length > 0) 
-            res.status(200).json(data);
-        else
+        if(data != undefined) {
+            let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
+            if(data.user_id == id){
+                res.status(200).json(data);
+            }else{
+                res.sendStatus(404);
+            }
+            
+        }else{
             res.sendStatus(404);
+        }
     },
 
     nuevaLista: async (req, res) => {
         let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
         if(req.body.name != null && req.body.name != undefined && req.body.name != ""){
-            let nueva = await listRepository.create(req.body.name, req.body.description, id); //! se cambia el id por el tocken
+            let nueva = await listRepository.create(req.body.name, req.body.description, id);
             res.status(201).json(nueva);
         }else{
             res.sendStatus(404);
@@ -57,11 +64,16 @@ const listController = {
         
     },
 
-    eliminarLista: async (req, res) => {
+    eliminarLista: async (req, res) => { //! solo puede eliminar la suya
         const data = await listRepository.findById(req.params.id);
         if(data != undefined){
-            await listRepository.delete(req.params.id);
-            res.sendStatus(204);
+            let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
+            if(data.user_id == id){
+                await listRepository.delete(req.params.id);
+                res.sendStatus(204);
+            }else{
+                res.sendStatus(404);
+            }
         }else{
             res.sendStatus(404);
         }   
@@ -70,14 +82,19 @@ const listController = {
 
     anyadirCancion: async (req, res) => {
 
-        let lista = await listRepository.findById(req.params.id);
+        let lista = await listRepository.findById(req.params.id1);
         if (lista != undefined) {
             let song = await songRepository.findById(req.params.id2);
             if (song != undefined) {
-                lista.songs.push(song.id);
-                await lista.save();
-                let data = await listRepository.findById(lista.id);
-                res.json(data);
+
+                if(lista.songs.indexOf(req.params.id2) == -1){
+                    lista.songs.push(song.id);
+                    await lista.save();
+                    let data = await listRepository.findById(lista.id1);
+                    res.json(data);
+                }else{
+                    res.sendStatus(404);
+                }
             } else {
                 res.sendStatus(404);
             }
@@ -89,11 +106,11 @@ const listController = {
 
     eliminarCancion: async (req, res) => {
 
-        let lista = await listRepository.findById(req.params.id);
+        let lista = await listRepository.findById(req.params.id1);
         if (lista != undefined) {
             lista.songs.pull(req.params.id2);
             await lista.save();
-            let data = await listRepository.findById(lista.id);
+            let data = await listRepository.findById(lista.id1);
             res.status(204).json(data);
         } else {
             res.sendStatus(404);
@@ -115,7 +132,7 @@ const listController = {
     obtenerCancion: async (req, res) => {
         const list = await listRepository.findById(req.params.id1)
         if(list != undefined){
-            if(list.songs.index(req.params.id2) !== -1){
+            if(list.songs.indexOf(req.params.id2) !== -1){
                 const dataSong = await songRepository.findById(req.params.id2);
                 res.status(200).json(dataSong);
             }else{
