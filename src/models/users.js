@@ -26,7 +26,7 @@ function toDto(user){
 
 const emailExists = async (email) => {
     const result = await User.countDocuments({ email: email }).exec();
-    return result > 0;
+    return result;
 
 }
 
@@ -54,7 +54,7 @@ const userRepository = {
 
     async findByEmail(email) {
         const result = await User.find({ email: email }).exec();
-        return result != null ? result : undefined;
+        return result != null ? result[0] : undefined;
      }
 
 }
@@ -63,5 +63,6 @@ const userRepository = {
 export  {
     User,
     userRepository,
-    emailExists
+    emailExists,
+    toDto
 }
