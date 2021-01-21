@@ -4,7 +4,6 @@ import Song from './songs';
 const { Schema } = mongoose;
 
 const listSchema = new Schema({
-  //id: mongoose.ObjectId,
   name: String,
   description: String,
   user_id: mongoose.ObjectId,

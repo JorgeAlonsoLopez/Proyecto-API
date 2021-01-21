@@ -1,6 +1,7 @@
 import { Song,songRepository} from '../models/songs';
 import {body, validationResult} from 'express-validator';
 
+
 const songController = {
 
     todasLasCanciones: async (req, res) => {
@@ -43,7 +44,7 @@ const songController = {
             if (modific == undefined)
                 res.sendStatus(404);
             else
-                res.status(204).json(modific);
+                res.sendStatus(204);
             }
         
         

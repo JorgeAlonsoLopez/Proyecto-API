@@ -1,11 +1,13 @@
+import 'dotenv/config';
+import bcrypt from 'bcryptjs';
 import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
-    id: mongoose.ObjectId,
-    name: String,
+    //id: mongoose.ObjectId,
+    nombre: String,
     email: String,
-    passw: Number
+    password: String
 });
 
 const User = mongoose.model('User', userSchema);
@@ -13,9 +15,9 @@ const User = mongoose.model('User', userSchema);
 function toDto(user){
     
     let dto = {
-        name: user.name,
+        nombre: user.nombre,
         email: user.email,
-        id: user.id
+        id: user._id
     }
     
     return dto;
@@ -24,28 +26,36 @@ function toDto(user){
 
 const emailExists = async (email) => {
     const result = await User.countDocuments({ email: email }).exec();
-    return result > 0;
+    return result;
 
 }
 
 const userRepository = {
-    async create(name, email, passw) {
+
+    async create(nombre, email, passw) {
         const theUser = new User({
-            name: name,
+            nombre: nombre,
             email: email,
-            passw: passw
+            password: passw
         });
         const result = await theUser.save();
         return toDto(result);
     },
+
     async findAll() {
         const result =  await User.find({}).exec();
         return result;
     },
+
     async findById(id) {
        const result = await User.findById(id).exec();
        return result != null ? result : undefined;
-    }
+    },
+
+    async findByEmail(email) {
+        const result = await User.find({ email: email }).exec();
+        return result != null ? result[0] : undefined;
+     }
 
 }
 
@@ -53,5 +63,6 @@ const userRepository = {
 export  {
     User,
     userRepository,
-    emailExists
+    emailExists,
+    toDto
 }
