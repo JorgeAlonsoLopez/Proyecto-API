@@ -2,12 +2,27 @@ import 'dotenv/config';
 import bcrypt from 'bcryptjs';
 import mongoose from 'mongoose';
 const { Schema } = mongoose;
+import validator from 'validator';
+
+
 
 const userSchema = new Schema({
-    //id: mongoose.ObjectId,
-    nombre: String,
-    email: String,
-    password: String
+    nombre: {
+        type: String,
+        required: [true, 'El nombre es necesario'],
+        minlength: [3, 'La cantidad mínima de caracteres es 3'],
+        validate: [validator.isAlpha, 'El nombre solo debe tener caracteres alfabeticos']
+        },
+    email: {
+        type: String,
+        required: [true, 'El correo es necesario'],
+        unique: [true, 'No puede registrar un email que ya existe'],
+        validate: [validator.isEmail, 'El formato debe ser el correcto']
+        },
+    password: {
+        type: String,
+        required: [true, 'La contraseña es necesaria']
+        }
 });
 
 const User = mongoose.model('User', userSchema);

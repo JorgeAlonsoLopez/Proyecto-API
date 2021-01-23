@@ -4,7 +4,11 @@ import Song from './songs';
 const { Schema } = mongoose;
 
 const listSchema = new Schema({
-  name: String,
+  name: {
+    type: String,
+    required: [true, 'El nombre es necesario'],
+    minlength: [1, 'La cantidad mínima de caracteres es 1']
+    },
   description: String,
   user_id: mongoose.ObjectId,
   songs: [{

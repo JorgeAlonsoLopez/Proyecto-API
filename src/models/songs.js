@@ -2,11 +2,23 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const songSchema = new Schema({
-  //id: mongoose.ObjectId,
-  title: String,
-  artist: String,
+  title: {
+    type: String,
+    required: [true, 'El nombre es necesario'],
+    minlength: [1, 'La cantidad mínima de caracteres es 1']
+    },
+  artist: {
+    type: String,
+    required: [true, 'El nombre es necesario'],
+    minlength: [1, 'La cantidad mínima de caracteres es 1']
+    },
   album: String,
-  year: Number
+  year: {
+    type: Number,
+    required: [true, 'El nombre es necesario'],
+    min: [1930, 'El año mínimo no puede ser inferior a 1930'],
+    max: [new Date().getFullYear(), 'No spuede superar el año actual']
+    }
 });
 
 const Song = mongoose.model('Song', songSchema);

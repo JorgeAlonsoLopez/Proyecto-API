@@ -22,31 +22,35 @@ const songController = {
     },
 
     nuevaCancion: async (req, res) => {
-        if(req.body.title != null && req.body.title != undefined && req.body.title != ""){
-            let nueva = await songRepository.create(req.body.title, req.body.album, req.body.artist, req.body.year);
-            res.status(201).json(nueva);
-        }else{
-            res.sendStatus(404);
+        try {
+                let nueva = await songRepository.create(req.body.title, req.body.album, req.body.artist, req.body.year);
+                res.status(201).json(nueva);
+            
+        } catch (error) {
+            res.status(400).json({Error: error.message});
         }
         
     },
 
     modificarCancion: async (req, res) => {
-        if(req.body.id != null){
-            res.sendStatus(409);
-        }else{
-            let modific = await songRepository.updateById(req.params.id, {
-                title: req.body.title,
-                artist: req.body.artist, 
-                album: req.body.album,
-                year: req.body.year
-            });
-            if (modific == undefined)
-                res.sendStatus(404);
-            else
-                res.sendStatus(204);
-            }
-        
+        try {
+            if(req.body.id != null){
+                res.sendStatus(409);
+            }else{
+                let modific = await songRepository.updateById(req.params.id, {
+                    title: req.body.title,
+                    artist: req.body.artist, 
+                    album: req.body.album,
+                    year: req.body.year
+                });
+                if (modific == undefined)
+                    res.sendStatus(404);
+                else
+                    res.sendStatus(204);
+                }
+        } catch (error) {
+            res.status(400).json({Error: error.message});
+        }
         
     },
 
