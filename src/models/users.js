@@ -9,10 +9,21 @@ import validator from 'validator';
 const userSchema = new Schema({
     nombre: {
         type: String,
-        required: [true, 'El nombre es necesario'],
+        required: [true, 'El nombre y apellidos es necesario'],
         minlength: [3, 'La cantidad mínima de caracteres es 3'],
-        validate: [validator.isAlpha, 'El nombre solo debe tener caracteres alfabeticos']
+        validate: {
+            validator: function(arr) {
+              return /^([A-Za-zÁÉÍÓÚñáéíóúÑ]{0}?[A-Za-zÁÉÍÓÚñáéíóúÑ\']+[\s])+([A-Za-zÁÉÍÓÚñáéíóúÑ]{0}?[A-Za-zÁÉÍÓÚñáéíóúÑ\'])+[\s]?([A-Za-zÁÉÍÓÚñáéíóúÑ]{0}?[A-Za-zÁÉÍÓÚñáéíóúÑ\'])?$/.test(arr);
+            },
+            message: "El nombre de usuario solo debe tener caracteres alfabeticos"
+          }
         },
+    usuario: {
+            type: String,
+            required: [true, 'El nombre de usuario es necesario'],
+            minlength: [3, 'La cantidad mínima de caracteres es 3'],
+            validate: [validator.isAlphanumeric, 'El nombre de usuario solo debe tener caracteres alfabeticos y numéricos, sin espacios ni caracteres especiales']
+            },
     email: {
         type: String,
         required: [true, 'El correo es necesario'],
@@ -31,6 +42,7 @@ function toDto(user){
     
     let dto = {
         nombre: user.nombre,
+        usuario: user.usuario,
         email: user.email,
         id: user._id
     }
@@ -47,9 +59,10 @@ const emailExists = async (email) => {
 
 const userRepository = {
 
-    async create(nombre, email, passw) {
+    async create(nombre, usuario, email, passw) {
         const theUser = new User({
             nombre: nombre,
+            usuario: usuario,
             email: email,
             password: passw
         });

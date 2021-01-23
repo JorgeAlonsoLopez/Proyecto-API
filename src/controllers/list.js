@@ -48,10 +48,11 @@ const listController = {
 
     modificarLista: async (req, res) => {
         try{
-            const data = await listRepository.findById(req.params.id);
-            let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
-            if(data != undefined){
-                if(data.user_id == id){
+            const lista = await listRepository.findById(req.params.id);
+            if(lista != undefined){
+                let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
+                if(lista.user == id){
+                    console.log("AAAAAAAAAAAA");
                     if(req.body.id != null){
                         res.sendStatus(400);
                     }else{
@@ -77,7 +78,7 @@ const listController = {
         const data = await listRepository.findById(req.params.id);
         if(data != undefined){
             let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
-            if(data.user_id == id){
+            if(data.user == id){
                 await listRepository.delete(req.params.id);
                 res.sendStatus(204);
             }else{
@@ -93,9 +94,10 @@ const listController = {
 
         let lista = await listRepository.findById(req.params.id1);
         let song = await songRepository.findById(req.params.id2);
+        console.log("AAA");
         if (song != undefined && lista != undefined) {
             let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
-            if(lista.user_id == id){
+            if(lista.user == id){
                 if(lista.songs.indexOf(req.params.id2) == -1){
                     lista.songs.push(song.id);
                     await lista.save();
@@ -119,7 +121,7 @@ const listController = {
         let lista = await listRepository.findById(req.params.id1);
         if (lista != undefined) {
             let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
-            if(lista.user_id == id){
+            if(lista.user == id){
                 lista.songs.pull(req.params.id2);
                 await lista.save();
                 let data = await listRepository.findById(lista.id1);

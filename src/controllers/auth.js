@@ -7,7 +7,7 @@ const AuthController = {
 
     register: async (req, res, next) => {
         try {
-            let usuarioCreado = await userRepository.create(req.body.nombre, req.body.email, 
+            let usuarioCreado = await userRepository.create(req.body.nombre, req.body.usuario, req.body.email, 
                         bcrypt.hashSync(req.body.password, parseInt(process.env.BCRYPT_ROUNDS)));
             res.status(201).json(usuarioCreado);            
         } catch (error) {
@@ -20,6 +20,7 @@ const AuthController = {
         const token = JwtService.sign(req.user);
         res.status(201).json({
             nombre: req.user.nombre,
+            usaurio: req.user.usuario,
             email: req.user.email,
             token: token
         });
