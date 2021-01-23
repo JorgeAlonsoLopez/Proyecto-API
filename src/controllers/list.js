@@ -149,10 +149,14 @@ const listController = {
     obtenerCancion: async (req, res) => {
         const list = await listRepository.findById(req.params.id1)
         if(list != undefined){
-            if(list.songs.indexOf(req.params.id2) !== -1){
+            let elemt = list.songs.find(obj => {
+                return obj.id === req.params.id2
+              });
+            if(elemt !== undefined){
                 const dataSong = await songRepository.findById(req.params.id2);
                 res.status(200).json(dataSong);
             }else{
+                
                 res.sendStatus(404);
             }
         }else{
