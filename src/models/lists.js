@@ -10,7 +10,10 @@ const listSchema = new Schema({
     minlength: [1, 'La cantidad mínima de caracteres es 1']
     },
   description: String,
-  user_id: mongoose.ObjectId,
+  user_id: {
+    type: mongoose.ObjectId,
+    ref: 'User'
+  },
   songs: [{
     type: mongoose.ObjectId,
     ref: 'Song'
@@ -22,17 +25,17 @@ const List = mongoose.model('List', listSchema);
 const listRepository = {
 
   async findAll() {
-    const result = await List.find({}).exec();
+    const result = await List.find({}).populate('songs', 'title').populate('user_id', 'nombre').exec();
     return result;
   },
 
   async findAllByUser(id_user) {
-    const result = await List.find({}).where('user_id').equals(id_user).exec();
+    const result = await List.find({}).where('user_id').equals(id_user).populate('songs', 'title').populate('user_id', 'nombre').exec();
     return result;
   },
 
   async findById(id) {
-    const result = await List.findById(id).exec();
+    const result = await List.findById(id).populate('songs', 'title').exec();
     return result != null ? result : undefined;
   },
 

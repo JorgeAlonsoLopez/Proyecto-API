@@ -34,35 +34,41 @@ const listController = {
     },
 
     nuevaLista: async (req, res) => {
-        let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
-        if(req.body.name != null && req.body.name != undefined && req.body.name != ""){
-            let nueva = await listRepository.create(req.body.name, req.body.description, id);
-            res.status(201).json(nueva);
-        }else{
-            res.sendStatus(404);
+        try{
+            let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
+
+                let nueva = await listRepository.create(req.body.name, req.body.description, id);
+                res.status(201).json(nueva);
+
+        } catch (error) {
+            res.status(400).json({Error: error.message});
         }
         
     },
 
     modificarLista: async (req, res) => {
-        const data = await listRepository.findById(req.params.id);
-        let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
-        if(data != undefined){
-            if(data.user_id == id){
-                if(req.body.id != null){
-                    res.sendStatus(400);
+        try{
+            const data = await listRepository.findById(req.params.id);
+            let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
+            if(data != undefined){
+                if(data.user_id == id){
+                    if(req.body.id != null){
+                        res.sendStatus(400);
+                    }else{
+                        let modific = await listRepository.updateById(req.params.id, req.body.name, req.body.description);
+                        if (modific == undefined)
+                            res.sendStatus(404);
+                        else
+                            res.sendStatus(204);
+                        }
                 }else{
-                    let modific = await listRepository.updateById(req.params.id, req.body.name, req.body.description);
-                    if (modific == undefined)
-                        res.sendStatus(404);
-                    else
-                        res.sendStatus(204);
-                    }
+                    res.sendStatus(401);
+                }
             }else{
                 res.sendStatus(404);
             }
-        }else{
-            res.sendStatus(404);
+        } catch (error) {
+            res.status(400).json({Error: error.message});
         }
         
     },
@@ -75,7 +81,7 @@ const listController = {
                 await listRepository.delete(req.params.id);
                 res.sendStatus(204);
             }else{
-                res.sendStatus(404);
+                res.sendStatus(401);
             }
         }else{
             res.sendStatus(404);
@@ -99,7 +105,7 @@ const listController = {
                     res.sendStatus(404);
                 }
             }else{
-                res.sendStatus(404);
+                res.sendStatus(401);
             }
         } else {
             res.sendStatus(404);
@@ -119,7 +125,7 @@ const listController = {
                 let data = await listRepository.findById(lista.id1);
                 res.sendStatus(204);
             } else {
-                res.sendStatus(404);
+                res.sendStatus(401);
             }
         } else {
             res.sendStatus(404);
