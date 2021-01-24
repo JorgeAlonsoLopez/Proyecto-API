@@ -35,7 +35,7 @@ const listRepository = {
   },
 
   async findById(id) {
-    const result = await List.findById(id).populate('songs', 'title').exec();
+    const result = await List.findById(id).populate('songs', 'title').populate('user', 'usuario').exec();
     return result != null ? result : undefined;
   },
 
