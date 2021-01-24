@@ -18,7 +18,6 @@ passport.use(new LocalStrategy({
     }else if (!bcrypt.compareSync(password, user.password)){
         return done(null, false);
     }else{
-        console.log(toDto(user));
         return done(null, toDto(user));
     }
 }));

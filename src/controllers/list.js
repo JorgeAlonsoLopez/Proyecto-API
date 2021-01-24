@@ -27,52 +27,59 @@ const listController = {
     listaPorId: async (req, res) => {
         const data = await listRepository.findById(req.params.id);
         if(data != undefined) {
-            let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
-            if(data.user_id == id){
-                res.status(200).json(data);
-            }else{
-                res.sendStatus(404);
-            }
-            
+            res.status(200).json(data);
         }else{
             res.sendStatus(404);
         }
     },
 
     nuevaLista: async (req, res) => {
-        let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
-        if(req.body.name != null && req.body.name != undefined && req.body.name != ""){
+        try{
+            let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
             let nueva = await listRepository.create(req.body.name, req.body.description, id);
             res.status(201).json(nueva);
-        }else{
-            res.sendStatus(404);
+        } catch (error) {
+            res.status(400).json({Error: error.message});
         }
         
     },
 
     modificarLista: async (req, res) => {
-        if(req.body.id != null){
-            res.sendStatus(400);
-        }else{
-            let modific = await listRepository.updateById(req.params.id, req.body.name, req.body.description);
-            if (modific == undefined)
+        try{
+            const lista = await listRepository.findById(req.params.id);
+            if(lista != undefined){
+                let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
+                if(lista.user == id){
+                    if(req.body.id != null){
+                        res.sendStatus(400);
+                    }else{
+                        let modific = await listRepository.updateById(req.params.id, req.body.name, req.body.description);
+                        if (modific == undefined)
+                            res.sendStatus(404);
+                        else
+                            res.sendStatus(204);
+                        }
+                }else{
+                    res.sendStatus(401);
+                }
+            }else{
                 res.sendStatus(404);
-            else
-                res.sendStatus(204);
             }
-        
+        } catch (error) {
+            res.status(400).json({Error: error.message});
+        }
         
     },
 
-    eliminarLista: async (req, res) => { //! solo puede eliminar la suya
+    eliminarLista: async (req, res) => { 
         const data = await listRepository.findById(req.params.id);
         if(data != undefined){
             let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
-            if(data.user_id == id){
+            if(data.user == id){
                 await listRepository.delete(req.params.id);
                 res.sendStatus(204);
             }else{
-                res.sendStatus(404);
+                res.sendStatus(401);
             }
         }else{
             res.sendStatus(404);
@@ -83,10 +90,10 @@ const listController = {
     anyadirCancion: async (req, res) => {
 
         let lista = await listRepository.findById(req.params.id1);
-        if (lista != undefined) {
-            let song = await songRepository.findById(req.params.id2);
-            if (song != undefined) {
-
+        let song = await songRepository.findById(req.params.id2);
+        if (song != undefined && lista != undefined) {
+            let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
+            if(lista.user == id){
                 if(lista.songs.indexOf(req.params.id2) == -1){
                     lista.songs.push(song.id);
                     await lista.save();
@@ -95,12 +102,13 @@ const listController = {
                 }else{
                     res.sendStatus(404);
                 }
-            } else {
-                res.sendStatus(404);
+            }else{
+                res.sendStatus(401);
             }
         } else {
             res.sendStatus(404);
         }
+
         
     },
 
@@ -108,10 +116,15 @@ const listController = {
 
         let lista = await listRepository.findById(req.params.id1);
         if (lista != undefined) {
-            lista.songs.pull(req.params.id2);
-            await lista.save();
-            let data = await listRepository.findById(lista.id1);
-            res.sendStatus(204);
+            let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
+            if(lista.user == id){
+                lista.songs.pull(req.params.id2);
+                await lista.save();
+                let data = await listRepository.findById(lista.id1);
+                res.sendStatus(204);
+            } else {
+                res.sendStatus(401);
+            }
         } else {
             res.sendStatus(404);
         }
@@ -132,10 +145,14 @@ const listController = {
     obtenerCancion: async (req, res) => {
         const list = await listRepository.findById(req.params.id1)
         if(list != undefined){
-            if(list.songs.indexOf(req.params.id2) !== -1){
+            let elemt = list.songs.find(obj => {
+                return obj.id === req.params.id2
+              });
+            if(elemt !== undefined){
                 const dataSong = await songRepository.findById(req.params.id2);
                 res.status(200).json(dataSong);
             }else{
+                
                 res.sendStatus(404);
             }
         }else{

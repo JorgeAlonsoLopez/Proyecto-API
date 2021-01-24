@@ -4,9 +4,16 @@ import Song from './songs';
 const { Schema } = mongoose;
 
 const listSchema = new Schema({
-  name: String,
+  name: {
+    type: String,
+    required: [true, 'El nombre es necesario'],
+    minlength: [1, 'La cantidad mínima de caracteres es 1']
+    },
   description: String,
-  user_id: mongoose.ObjectId,
+  user: {
+    type: mongoose.ObjectId,
+    ref: 'User'
+  },
   songs: [{
     type: mongoose.ObjectId,
     ref: 'Song'
@@ -18,25 +25,25 @@ const List = mongoose.model('List', listSchema);
 const listRepository = {
 
   async findAll() {
-    const result = await List.find({}).exec();
+    const result = await List.find({}).populate('songs', 'title').populate('user', 'usuario').exec();
     return result;
   },
 
   async findAllByUser(id_user) {
-    const result = await List.find({}).where('user_id').equals(id_user).exec();
+    const result = await List.find({}).where('user').equals(id_user).populate('songs', 'title').populate('user', 'usuario').exec();
     return result;
   },
 
   async findById(id) {
-    const result = await List.findById(id).exec();
+    const result = await List.findById(id).populate('songs', 'title').populate('user', 'usuario').exec();
     return result != null ? result : undefined;
   },
 
-  async create(name, description, user_id) {
+  async create(name, description, user) {
     const theList = new List({
       name: name,
       description: description, 
-      user_id: user_id,
+      user: user,
       songs: []
     });
     const result = await theList.save();
