@@ -36,10 +36,8 @@ const listController = {
     nuevaLista: async (req, res) => {
         try{
             let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
-
-                let nueva = await listRepository.create(req.body.name, req.body.description, id);
-                res.status(201).json(nueva);
-
+            let nueva = await listRepository.create(req.body.name, req.body.description, id);
+            res.status(201).json(nueva);
         } catch (error) {
             res.status(400).json({Error: error.message});
         }
@@ -52,7 +50,6 @@ const listController = {
             if(lista != undefined){
                 let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
                 if(lista.user == id){
-                    console.log("AAAAAAAAAAAA");
                     if(req.body.id != null){
                         res.sendStatus(400);
                     }else{
@@ -94,7 +91,6 @@ const listController = {
 
         let lista = await listRepository.findById(req.params.id1);
         let song = await songRepository.findById(req.params.id2);
-        console.log("AAA");
         if (song != undefined && lista != undefined) {
             let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
             if(lista.user == id){

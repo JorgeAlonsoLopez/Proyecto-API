@@ -10,6 +10,7 @@ const router = Router();
 
 router.post('/register', AuthController.register);
 
+router.get('/login',password(),AuthController.login);
 
 router.post('/login',password(),AuthController.login);
 

@@ -17,13 +17,17 @@ const AuthController = {
     },
 
     login: (req, res, next) => {
-        const token = JwtService.sign(req.user);
-        res.status(201).json({
-            nombre: req.user.nombre,
-            usaurio: req.user.usuario,
-            email: req.user.email,
-            token: token
-        });
+        try{
+            const token = JwtService.sign(req.user);
+            res.status(201).json({
+                nombre: req.user.nombre,
+                usaurio: req.user.usuario,
+                email: req.user.email,
+                token: token
+            });
+        } catch (error) {
+            res.status(400).json({Error: error.message});
+        }
     }
 
 }

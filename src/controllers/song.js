@@ -23,9 +23,8 @@ const songController = {
 
     nuevaCancion: async (req, res) => {
         try {
-                let nueva = await songRepository.create(req.body.title, req.body.album, req.body.artist, req.body.year);
-                res.status(201).json(nueva);
-            
+            let nueva = await songRepository.create(req.body.title, req.body.album, req.body.artist, req.body.year);
+            res.status(201).json(nueva);    
         } catch (error) {
             res.status(400).json({Error: error.message});
         }
