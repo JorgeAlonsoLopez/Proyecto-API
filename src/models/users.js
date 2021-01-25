@@ -1,8 +1,9 @@
 import 'dotenv/config';
 import bcrypt from 'bcryptjs';
+import validator from 'validator';
 import mongoose from 'mongoose';
 const { Schema } = mongoose;
-import validator from 'validator';
+
 
 
 
@@ -32,7 +33,8 @@ const userSchema = new Schema({
         },
     password: {
         type: String,
-        required: [true, 'La contraseña es necesaria']
+        required: [true, 'La contraseña es necesaria'],
+        minlength: [6, 'La cantidad mínima de caracteres es 6']
         }
 });
 
@@ -67,6 +69,9 @@ const userRepository = {
             password: passw
         });
         const result = await theUser.save();
+        let saved = await User.findById(result.id).exec();
+        theUser.password = bcrypt.hashSync(passw, parseInt(process.env.BCRYPT_ROUNDS));
+        await Object.assign(saved, theUser).save();
         return toDto(result);
     },
 
