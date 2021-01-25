@@ -14,7 +14,7 @@ Se hará uso de los siguientes comandos: ```npm install```, para instalar las li
 
 | Función  | HTTP     | URL           | Parámetros en el cuerpo                    |
 |----------|----------|---------------|-------------------------------|
-| Registro | POST     | auth/register | nombre (requerido / alfabético / 3 caracteres mínimo (se admite nombre y apellidos))<br/>usuario (requerido / alfanumérico / 3 caracteres mínimo)<br/> email (requerido / email)<br/> password (requerido) |
+| Registro | POST     | auth/register | nombre (requerido / alfabético / 3 caracteres mínimo (se admite nombre y apellidos))<br/>usuario (requerido / alfanumérico / 3 caracteres mínimo)<br/> email (requerido / email)<br/> password (requerido / 6 caracteres mínimo) |
 | Login    | POST/GET | auth/login    | email (requerido)<br/> password (requerido)           |
 
 <br/><br/>
@@ -67,7 +67,7 @@ PORT= (Puerto de la aplicación)
 <br/>
 JWT_SECRET= (El secreto que va a conformar la firma del token)
 <br/>
-BCRYPT_ROUNDS= (Número de rondas utiliadas para el algoritmo de hashing de la contraseña)  
+BCRYPT_ROUNDS= (Número de rondas utilizadas para el algoritmo de hashing de la contraseña)  
 <br/>
 JWT_LIFETIME= (Tiempo de vida del token)
 <br/>

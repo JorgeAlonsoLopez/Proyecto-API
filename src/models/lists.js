@@ -25,17 +25,17 @@ const List = mongoose.model('List', listSchema);
 const listRepository = {
 
   async findAll() {
-    const result = await List.find({}).populate('songs', 'title').populate('user', 'usuario').exec();
+    const result = await List.find({}).populate('songs', ['title', 'artist']).populate('user', 'usuario').exec();
     return result;
   },
 
   async findAllByUser(id_user) {
-    const result = await List.find({}).where('user').equals(id_user).populate('songs', 'title').populate('user', 'usuario').exec();
+    const result = await List.find({}).where('user').equals(id_user).populate('songs',  ['title', 'artist']).populate('user', 'usuario').exec();
     return result;
   },
 
   async findById(id) {
-    const result = await List.findById(id).populate('songs', 'title').populate('user', 'usuario').exec();
+    const result = await List.findById(id).populate('songs',  ['title', 'artist']).populate('user', 'usuario').exec();
     return result != null ? result : undefined;
   },
 
