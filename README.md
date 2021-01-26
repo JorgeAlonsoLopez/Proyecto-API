@@ -2,7 +2,7 @@
 
 El proyecto consiste en la creación de una API REST con express sobre node, conectada a una base de datos de mongodb y conectada con mongoose. 
 
-Con ella se van a gestionar unas colecciones de canciones y listas de reproducción. A tener en cuenta que se implementa JWT, por lo que será necesario que nos registremos e iniciemos sesión con la cuenta para hacer las peticiones sobre las canciones y listas de reproducción. 
+Con ella se van a gestionar unas colecciones de canciones y listas de reproducción. A tener en cuenta que se implementa JWT, por lo que será necesario que nos registremos e iniciemos sesión con la cuenta para obtener el token, establecer una autorización del tipo Bearer token y poder hacer las peticiones sobre las canciones y listas de reproducción. 
 
 A continuación, se van a resumir las distintas peticiones indicando su función, ruta, método de petición HTTP y los parámetros que son necesarios.
 
@@ -39,10 +39,11 @@ El **id** hace referencia al id de la canción.
 
 | Función                  | HTTP   | URL         | Parámetros en el cuerpo |
 |--------------------------|--------|-------------|------------|
-| Nueva lista              | POST   | /lists      | name (requerido / 1 caracter mínimo)<br/> description (opcional)            |
-| Obtener todas las listas | GET    | /lists      |            |
+| Nueva lista              | POST   | /lists      | name (requerido / 1 caracter mínimo)<br/> description (opcional)<br/> privat (requerido / boolean)          |
+| Obtener todas las listas públicas | GET    | /lists/all      |            |
+| Obtener todas las listas pertenecinetes al usuario| GET    | /lists      |            |
 | Obtener una lista        | GET    | /lists/{id} |            |
-| Modificar una lista      | PUT    | /lists/{id} | name (requerido / 1 caracter mínimo)<br/> description (opcional)             |
+| Modificar una lista      | PUT    | /lists/{id} | name (requerido / 1 caracter mínimo)<br/> description (opcional)<br/> privat (requerido / boolean)              |
 | Eliminar una lista       | DELETE | /lists/{id} |            |
 | Añadir una canción a una lista          | POST   | /lists/{id1}/songs/{id2} |            |
 | Listar todas las canciones de una lista | GET    | /lists/{id}/songs        |            |
@@ -51,7 +52,7 @@ El **id** hace referencia al id de la canción.
 
 <br/>
 
-Al crear una lista de reproducción, a esta lista se le asigna el id del usuario logeado que la ha creado, por lo que solo ese mismo usuario va a poder editarla, a nivel de información y de canciones, o borrarla. 
+Al crear una lista de reproducción, a esta lista se le asigna el id del token perteneciente al usuario logeado, por lo que solo ese mismo usuario va a poder editarla, a nivel de información y de canciones, o borrarla. Se puede establecer como privada (privat = ```true```) o pública (privat = ```false```), permitiendo al resto de usuarios verla.
 
 El **id** e **id1** hace referencia al id de la lista y el **id2** al de la canción.
 
