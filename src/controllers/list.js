@@ -12,31 +12,39 @@ const listController = {
         if (Array.isArray(data) && data.length > 0) 
             res.status(200).json(data);
         else
-            res.sendStatus(404);
+            res.status(404).json({
+                mensaje: `No hay ninguna lista pública`
+            });
+            
     },
 
     todasLasListasPorUsuario: async (req, res) => {
         let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
         const data = await listRepository.findAllByUser(id);
-        if (data != undefined) 
+        if (Array.isArray(data) && data.length > 0) 
             res.status(200).json(data);
         else
-            res.sendStatus(404);
+        res.status(404).json({
+            mensaje: `No hay ninguna lista creada por este usuario`
+        });
     },
 
     listaPorId: async (req, res) => {
         const data = await listRepository.findById(req.params.id);
-        if(data != undefined) {
+        let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
+        if(data != undefined && (data.privat == false || data.user.id == id)) {
             res.status(200).json(data);
         }else{
-            res.sendStatus(404);
+            res.status(404).json({
+                mensaje: `La lista que busca no existe o no tiene acceso a la misma`
+            });
         }
     },
 
     nuevaLista: async (req, res) => {
         try{
             let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
-            let nueva = await listRepository.create(req.body.name, req.body.description, id);
+            let nueva = await listRepository.create(req.body.name, req.body.description, id, req.body.privat);
             res.status(201).json(nueva);
         } catch (error) {
             res.status(400).json({Error: error.message});
@@ -53,17 +61,23 @@ const listController = {
                     if(req.body.id != null){
                         res.sendStatus(400);
                     }else{
-                        let modific = await listRepository.updateById(req.params.id, req.body.name, req.body.description);
+                        let modific = await listRepository.updateById(req.params.id, req.body.name, req.body.description, req.body.privat);
                         if (modific == undefined)
-                            res.sendStatus(404);
+                            res.status(404).json({
+                                mensaje: `La lista que busca no existe`
+                            });
                         else
                             res.sendStatus(204);
                         }
                 }else{
-                    res.sendStatus(401);
+                    res.status(401).json({
+                        mensaje: `No está autorizado para hacer cambios`
+                    });
                 }
             }else{
-                res.sendStatus(404);
+                res.status(404).json({
+                    mensaje: `La lista que busca no existe`
+                });
             }
         } catch (error) {
             res.status(400).json({Error: error.message});
@@ -79,10 +93,14 @@ const listController = {
                 await listRepository.delete(req.params.id);
                 res.sendStatus(204);
             }else{
-                res.sendStatus(401);
+                res.status(401).json({
+                    mensaje: `No está autorizado para hacer cambios`
+                });
             }
         }else{
-            res.sendStatus(404);
+            res.status(404).json({
+                mensaje: `La lista que busca eliminar no existe`
+            });
         }   
         
     },
@@ -100,13 +118,19 @@ const listController = {
                     let data = await listRepository.findById(lista.id1);
                     res.json(data);
                 }else{
-                    res.sendStatus(404);
+                    res.status(404).json({
+                        mensaje: `La lista que busca no existe`
+                    });
                 }
             }else{
-                res.sendStatus(401);
+                res.status(401).json({
+                    mensaje: `No está autorizado para hacer cambios`
+                });
             }
         } else {
-            res.sendStatus(404);
+            res.status(404).json({
+                mensaje: `La lista o canción que busca no existen`
+            });
         }
 
         
@@ -123,28 +147,36 @@ const listController = {
                 let data = await listRepository.findById(lista.id1);
                 res.sendStatus(204);
             } else {
-                res.sendStatus(401);
+                res.status(401).json({
+                    mensaje: `No está autorizado para hacer cambios`
+                });
             }
         } else {
-            res.sendStatus(404);
+            res.status(404).json({
+                mensaje: `La lista que busca no existe`
+            });
         }
         
     },
 
     listarTodasCanciones: async (req, res) => {
-        const list = await listRepository.findById(req.params.id)
-        if(list != undefined){
+        const list = await listRepository.findById(req.params.id);
+        let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
+        if(list != undefined && (list.privat == false || list.user.id == id)){
             const songs = await listRepository.findSongsById(req.params.id);
             res.status(200).json(songs);
         }else{
-            res.sendStatus(404);
+            res.status(404).json({
+                mensaje: `La lista que busca no existe o no tiene acceso a la misma`
+            });
         } 
         
     },
 
     obtenerCancion: async (req, res) => {
-        const list = await listRepository.findById(req.params.id1)
-        if(list != undefined){
+        const list = await listRepository.findById(req.params.id1);
+        let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
+        if(list != undefined  && (list.privat == false || list.user.id == id)){
             let elemt = list.songs.find(obj => {
                 return obj.id === req.params.id2
               });
@@ -152,11 +184,14 @@ const listController = {
                 const dataSong = await songRepository.findById(req.params.id2);
                 res.status(200).json(dataSong);
             }else{
-                
-                res.sendStatus(404);
+                res.status(404).json({
+                    mensaje: `La canción que busca no se encuentra en esta lista`
+                });
             }
         }else{
-            res.sendStatus(404);
+            res.status(404).json({
+                mensaje: `La lista que busca no existe o no tiene acceso a la misma`
+            });
         }        
     }
 

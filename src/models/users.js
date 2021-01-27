@@ -16,7 +16,7 @@ const userSchema = new Schema({
             validator: function(arr) {
               return /^([A-Za-zÁÉÍÓÚñáéíóúÑ]{0}?[A-Za-zÁÉÍÓÚñáéíóúÑ\']+[\s])+([A-Za-zÁÉÍÓÚñáéíóúÑ]{0}?[A-Za-zÁÉÍÓÚñáéíóúÑ\'])+[\s]?([A-Za-zÁÉÍÓÚñáéíóúÑ]{0}?[A-Za-zÁÉÍÓÚñáéíóúÑ\'])?$/.test(arr);
             },
-            message: "El nombre de usuario solo debe tener caracteres alfabeticos"
+            message: "El nombre de usuario solo debe tener caracteres alfabeticos y la primera letra de cada nombre y apellido en mayúscula"
           }
         },
     usuario: {
@@ -41,22 +41,18 @@ const userSchema = new Schema({
 const User = mongoose.model('User', userSchema);
 
 function toDto(user){
-    
     let dto = {
         nombre: user.nombre,
         usuario: user.usuario,
         email: user.email,
         id: user._id
     }
-    
     return dto;
-    
 }
 
 const emailExists = async (email) => {
     const result = await User.countDocuments({ email: email }).exec();
     return result;
-
 }
 
 const userRepository = {

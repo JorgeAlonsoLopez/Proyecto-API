@@ -9,7 +9,9 @@ const songController = {
         if (Array.isArray(data) && data.length > 0) 
             res.status(200).json(data);
         else
-            res.sendStatus(404);
+            res.status(404).json({
+                mensaje: `No hay ninguna canción`
+            });
     },
 
     cancionPorId: async (req, res) => {
@@ -17,7 +19,9 @@ const songController = {
         if(data != undefined) {
             res.status(200).json(data);
         }else{
-            res.sendStatus(404);
+            res.status(404).json({
+                mensaje: `La canción que busca no existe`
+            });
         }
     },
 
@@ -34,7 +38,9 @@ const songController = {
     modificarCancion: async (req, res) => {
         try {
             if(req.body.id != null){
-                res.sendStatus(409);
+                res.status(409).json({
+                    mensaje: `Está intentando modificar el id`
+                });
             }else{
                 let modific = await songRepository.updateById(req.params.id, {
                     title: req.body.title,
@@ -43,7 +49,9 @@ const songController = {
                     year: req.body.year
                 });
                 if (modific == undefined)
-                    res.sendStatus(404);
+                    res.status(404).json({
+                        mensaje: `La canción que busca no existe`
+                    });
                 else
                     res.sendStatus(204);
                 }
@@ -59,7 +67,9 @@ const songController = {
             await songRepository.delete(req.params.id);
             res.sendStatus(204);
         }else{
-            res.sendStatus(404);
+            res.status(404).json({
+                mensaje: `La canción que busca no existe`
+            });
         }   
         
     }
