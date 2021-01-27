@@ -31,11 +31,12 @@ const listController = {
 
     listaPorId: async (req, res) => {
         const data = await listRepository.findById(req.params.id);
-        if(data != undefined) {
+        let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
+        if(data != undefined && (data.privat == false || data.user.id == id)) {
             res.status(200).json(data);
         }else{
             res.status(404).json({
-                mensaje: `La lista que busca no existe`
+                mensaje: `La lista que busca no existe o no tiene acceso a la misma`
             });
         }
     },
@@ -159,21 +160,23 @@ const listController = {
     },
 
     listarTodasCanciones: async (req, res) => {
-        const list = await listRepository.findById(req.params.id)
-        if(list != undefined){
+        const list = await listRepository.findById(req.params.id);
+        let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
+        if(list != undefined && (list.privat == false || list.user.id == id)){
             const songs = await listRepository.findSongsById(req.params.id);
             res.status(200).json(songs);
         }else{
             res.status(404).json({
-                mensaje: `La lista que busca no existe`
+                mensaje: `La lista que busca no existe o no tiene acceso a la misma`
             });
         } 
         
     },
 
     obtenerCancion: async (req, res) => {
-        const list = await listRepository.findById(req.params.id1)
-        if(list != undefined){
+        const list = await listRepository.findById(req.params.id1);
+        let id = jwt.decode(req.headers.authorization.split(' ')[1]).sub;
+        if(list != undefined  && (list.privat == false || list.user.id == id)){
             let elemt = list.songs.find(obj => {
                 return obj.id === req.params.id2
               });
@@ -187,7 +190,7 @@ const listController = {
             }
         }else{
             res.status(404).json({
-                mensaje: `La lista que busca no existe`
+                mensaje: `La lista que busca no existe o no tiene acceso a la misma`
             });
         }        
     }

@@ -6,7 +6,7 @@ Con ella se van a gestionar unas colecciones de canciones y listas de reproducci
 
 A continuación, se van a resumir las distintas peticiones indicando su función, ruta, método de petición HTTP y los parámetros que son necesarios.
 
-Se hará uso de los siguientes comandos: ```npm install```, para instalar las librerías necesarias y ``` npm start ``` para arrancar la aplicación.
+Se hará uso de los siguientes comandos: ```npm install```, para instalar las librerías necesarias y ``` npm start ``` para arrancar la aplicación. En el caso de que no tenga la base de datos, se cargarán datos de prueba.
 
 <br/><br/>
 ## Login y registro de usuarios
@@ -14,7 +14,7 @@ Se hará uso de los siguientes comandos: ```npm install```, para instalar las li
 
 | Función  | HTTP     | URL           | Parámetros en el cuerpo                    |
 |----------|----------|---------------|-------------------------------|
-| Registro | POST     | auth/register | nombre (requerido / alfabético / 3 caracteres mínimo (se admite nombre y apellidos))<br/>usuario (requerido / alfanumérico / 3 caracteres mínimo)<br/> email (requerido / email)<br/> password (requerido / 6 caracteres mínimo) |
+| Registro | POST     | auth/register | nombre (requerido / alfabético / 3 caracteres mínimo (nombre y apellidos))<br/>usuario (requerido / alfanumérico / 3 caracteres mínimo)<br/> email (requerido / email)<br/> password (requerido / 6 caracteres mínimo) |
 | Login    | POST/GET | auth/login    | email (requerido)<br/> password (requerido)           |
 
 <br/><br/>
@@ -41,7 +41,7 @@ El **id** hace referencia al id de la canción.
 |--------------------------|--------|-------------|------------|
 | Nueva lista              | POST   | /lists      | name (requerido / 1 caracter mínimo)<br/> description (opcional)<br/> privat (requerido / boolean)          |
 | Obtener todas las listas públicas | GET    | /lists/all      |            |
-| Obtener todas las listas pertenecinetes al usuario| GET    | /lists      |            |
+| Obtener todas las listas pertenecientes al usuario| GET    | /lists      |            |
 | Obtener una lista        | GET    | /lists/{id} |            |
 | Modificar una lista      | PUT    | /lists/{id} | name (requerido / 1 caracter mínimo)<br/> description (opcional)<br/> privat (requerido / boolean)              |
 | Eliminar una lista       | DELETE | /lists/{id} |            |
