@@ -29,6 +29,7 @@ mongoose.connect(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology
     if (err) {
       console.log(`Error de conexión a la base de datos: ${JSON.stringify(err)}`);
     } else {
+      models.comprobarDatos();
       console.log(`Conexión correcta a la base de datos en la URI ${process.env.DB_URI}`);
       app.listen(process.env.PORT, () =>
         console.log(

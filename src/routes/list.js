@@ -7,7 +7,10 @@ import { token } from '../services/passport';
 
 const router = Router();
 
-router.get('/', token(), listController.todasLasListas);
+router.get('/', token(), listController.todasLasListasPorUsuario);
+
+
+router.get('/all', token(), listController.todasLasListas);
 
 
 router.get('/:id', token(), listController.listaPorId);
