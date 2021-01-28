@@ -29,6 +29,11 @@ const List = mongoose.model('List', listSchema);
 
 const listRepository = {
 
+  async findAlls() {
+    const result = await List.find({}).exec();
+    return result;
+  },
+
   async findAll() {
     const result = await List.find({ privat: false }).populate('songs', ['title','artist']).populate('user', 'usuario').exec();
     return result;
