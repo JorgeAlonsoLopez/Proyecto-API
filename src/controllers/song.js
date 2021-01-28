@@ -1,5 +1,7 @@
 import { Song,songRepository} from '../models/songs';
 import {body, validationResult} from 'express-validator';
+import { listRepository } from '../models/lists';
+import { listController } from './list';
 
 
 const songController = {
@@ -64,14 +66,25 @@ const songController = {
     eliminarCancion: async (req, res) => {
         const data = await songRepository.findById(req.params.id);
         if(data != undefined){
+            //Comprobamos si en alguna lista está la canción y la eliminamos
+            let listas = await listRepository.findAlls();
+            if (listas.length > 0){
+                for (let element = 0; element < listas.length; element++) {
+                   for (let index = 0; index < listas[element].songs.length; index++) {
+                        if ( listas[element].songs[index] == req.params.id) { 
+                            listas[element].songs.pull(req.params.id);
+                            await listas[element].save();
+                        }
+                    } 
+                }
+            }
             await songRepository.delete(req.params.id);
             res.sendStatus(204);
         }else{
             res.status(404).json({
                 mensaje: `La canción que busca no existe`
             });
-        }   
-        
+        } 
     }
 
 
