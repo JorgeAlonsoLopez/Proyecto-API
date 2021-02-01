@@ -60,19 +60,19 @@ El **id** e **id1** hace referencia al id de la lista y el **id2** al de la canc
 
 ## Variables de entorno
 <br/>
-Las variables de entorno son:  
+Las variables de entorno, junto con ejemplos, son:  
 <br/><br/>
-DB_URI= (URL de la base de datos)
+DB_URI=mongodb://localhost/mongoose (URL de la base de datos)
 <br/>
-PORT= (Puerto de la aplicación)  
+PORT=3000 (Puerto de la aplicación)  
 <br/>
-JWT_SECRET= (El secreto que va a conformar la firma del token)
+JWT_SECRET=esteEsElSecretoMásSecretoDeTodosLosSecretos (El secreto que va a conformar la firma del token)
 <br/>
-BCRYPT_ROUNDS= (Número de rondas utilizadas para el algoritmo de hashing de la contraseña)  
+BCRYPT_ROUNDS=12 (Número de rondas utilizadas para el algoritmo de hashing de la contraseña)  
 <br/>
-JWT_LIFETIME= (Tiempo de vida del token)
+JWT_LIFETIME=1d (Tiempo de vida del token)
 <br/>
-JWT_ALGORITHM= (Algoritmo de cifrado del token)  
+JWT_ALGORITHM=HS256 (Algoritmo de cifrado del token)  
 
 <br/><br/>
 ## Librerías usadas
