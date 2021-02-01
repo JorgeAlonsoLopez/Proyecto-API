@@ -1,4 +1,4 @@
-# Proyecto-API
+# Trianafy-API
 
 El proyecto consiste en la creación de una API REST con express sobre node, conectada a una base de datos de mongodb y conectada con mongoose. 
 
